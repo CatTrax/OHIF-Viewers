@@ -78,7 +78,7 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
     },
     output: {
       // clean: true,
-      publicPath: '/',
+      publicPath: '/react/',
     },
     context: SRC_DIR,
     stats: {

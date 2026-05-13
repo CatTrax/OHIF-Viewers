@@ -62,7 +62,6 @@ export type ButtonProps = {
   listeners?: Record<string, RunCommand>;
   options?: ButtonOptions[];
   buttonSection?: string | boolean;
-  isActive?: boolean;
 };
 
 export type Button = {

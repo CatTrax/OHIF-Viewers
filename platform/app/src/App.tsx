@@ -78,6 +78,26 @@ function App({
     run();
   }, []);
 
+  // useEffect(() => {
+  //   const handler = event => {
+  //     if (event.origin !== window.location.origin) return;
+  //     console.log('xxxxx Received:', event.data);
+  //   };
+
+  //   window.addEventListener('message', handler);
+  //   window.addEventListener('popstate', () => {
+  //     console.log('Route changed:', window.location.pathname);
+  //     window.parent.postMessage(
+  //       {
+  //         type: 'ROUTE_CHANGED',
+  //         path: window.location.pathname,
+  //       },
+  //       window.location.origin
+  //     );
+  //   });
+  //   return () => window.removeEventListener('message', handler);
+  // }, []);
+
   if (!init) {
     return null;
   }
