@@ -34,6 +34,7 @@ import {
   Onboarding,
   ScrollArea,
   InvestigationalUseDialog,
+  useAppState,
 } from '@ohif/ui-next';
 
 import { Types } from '@ohif/ui';
@@ -64,6 +65,11 @@ function WorkList({
   const { t } = useTranslation();
   // ~ Modes
   const [appConfig] = useAppConfig();
+
+  const { cattraxPatientData } = useAppState();
+
+  console.log('cattraxPatientData', cattraxPatientData);
+
   // ~ Filters
   const searchParams = useSearchParams();
   const navigate = useNavigate();
@@ -206,6 +212,7 @@ function WorkList({
       skipNull: true,
       skipEmptyString: true,
     });
+
     navigate({
       pathname: '/',
       search: search ? `?${search}` : undefined,

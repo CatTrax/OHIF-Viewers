@@ -35,6 +35,7 @@ import * as StudyMetadataTypes from './StudyMetadata';
 import * as ViewportGridTypes from './ViewportGridType';
 
 import { StepOptions, TourOptions } from 'shepherd.js';
+import CattraxApiService from 'platform/app/src/services/CattraxApiService';
 
 declare global {
   namespace AppTypes {
@@ -80,6 +81,7 @@ declare global {
       panelService?: PanelServiceType;
       studyPrefetcherService?: StudyPrefetcherServiceType;
       multiMonitorService?: MultiMonitorService;
+      myApiService?: CattraxApiService;
     }
 
     export interface Config {

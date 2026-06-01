@@ -1,3 +1,4 @@
 import { TimingEnum } from './TimingEnum';
+import { EventTypes } from './EventsHub';
 
-export { TimingEnum };
+export { TimingEnum, EventTypes };

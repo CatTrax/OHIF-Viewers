@@ -35,6 +35,16 @@ function DataSourceWrapper(props: withAppTypes) {
   const location = useLocation();
   const lowerCaseSearchParams = useSearchParams({ lowerCaseKeys: true });
   const query = useSearchParams();
+
+  // const hash = window.location.hash.substring(1); // "aa=dd"
+
+  // console.log(aa, bb); // "dd"
+
+  // const patientId = lowerCaseSearchParams['aa'];
+  // const practiceId = lowerCaseSearchParams['bb'];
+
+  // console.log('kkkkkkkkkkkk:', aa);
+
   // Route props --> studies.mapParams
   // mapParams --> studies.search
   // studies.search --> studies.processResults
@@ -106,9 +116,6 @@ function DataSourceWrapper(props: withAppTypes) {
   const [data, setData] = useState(DEFAULT_DATA);
   const [isLoading, setIsLoading] = useState(false);
 
-  const allCookies = document.cookie;
-  console.log('All cookies:', allCookies);
-
   /**
    * The effect to initialize the data source whenever it changes. Similar to
    * whenever a different Mode is entered, the Mode's data source is initialized, so
@@ -143,42 +150,27 @@ function DataSourceWrapper(props: withAppTypes) {
     return () => sub.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const handler = event => {
-      if (event.origin !== window.location.origin) return;
-      console.log('xxxxx Received:', event.data);
-      // servicesManager.services.uiModalService.show({
-      //   title: 'Welome to use DICOM application',
-      //   content: () => {
-      //     return (
-      //       <div className="text-foreground">
-      //         {/* <p>Welome to use DICOM application</p> */}
-      //         <div className="mt-2 font-bold">{event.data.token.userName}</div>
-      //       </div>
-      //     );
-      //   },
-      // });
-    };
-
-    window.addEventListener('message', handler);
-    window.addEventListener('popstate', () => {
-      console.log('Route changed:', window.location.pathname);
-      window.parent.postMessage(
-        {
-          type: 'ROUTE_CHANGED',
-          path: window.location.pathname,
-        },
-        window.location.origin
-      );
-    });
-    return () => window.removeEventListener('message', handler);
-  }, []);
+  // servicesManager.services.userAuthenticationService.setServiceImplementation({
+  //   getAuthorizationHeader: () => {
+  //     return {
+  //       Authorization: `Bearer sdfkjksdjfksdjfkjsdkfj`,
+  //     };
+  //   },
+  // });
 
   useEffect(() => {
     if (!isDataSourceInitialized) {
       return;
     }
-
+    servicesManager.services.myApiService
+      .fetchPatient(492, 3)
+      .then(result => {
+        console.log('API call successful, result:', result);
+      })
+      .catch(error => {
+        console.error('API call failed:', error);
+      });
+    // const result = servicesManager.services.
     const queryFilterValues = _getQueryFilterValues(location.search, STUDIES_LIMIT);
 
     // 204: no content

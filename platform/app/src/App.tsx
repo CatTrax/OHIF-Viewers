@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import i18n from '@ohif/i18n';
 import { I18nextProvider } from 'react-i18next';
 import { BrowserRouter, type BrowserRouterProps } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import Compose from './routes/Mode/Compose';
 import {
@@ -14,6 +15,7 @@ import {
   ServiceProvidersManager,
   SystemContextProvider,
   ViewportRefsProvider,
+  Enums,
 } from '@ohif/core';
 import {
   ThemeWrapper as ThemeWrapperNext,
@@ -27,6 +29,8 @@ import {
   ModalProvider,
   ViewportDialogProvider,
   UserAuthenticationProvider,
+  AppStateProvider,
+  useAppState,
 } from '@ohif/ui-next';
 // Viewer Project
 // TODO: Should this influence study list?
@@ -36,6 +40,7 @@ import appInit from './appInit.js';
 import OpenIdConnectRoutes from './utils/OpenIdConnectRoutes';
 import { ShepherdJourneyProvider } from 'react-shepherd';
 import './App.css';
+import CattraxApiService from './services/CattraxApiService';
 
 let commandsManager: CommandsManager,
   extensionManager: ExtensionManager,
@@ -46,6 +51,38 @@ let commandsManager: CommandsManager,
 const routerFutureFlags: BrowserRouterProps['future'] = {
   v7_startTransition: true,
   v7_relativeSplatPath: true,
+};
+
+const CattraxView = () => {
+  const { setCattraxPatientData } = useAppState();
+  useEffect(() => {
+    const handler = event => {
+      console.log('xxxxx Received:', event.data);
+      if (event.data && event.data.type === Enums.EventTypes.SET_PATIENT_PRACTICE) {
+        setCattraxPatientData(event.data.data);
+      }
+    };
+
+    window.addEventListener('message', handler);
+    const popstateHandler = () => {
+      console.log('Route changed:', window.location.pathname);
+      //TODO: yang
+      const targetOrigin = 'http://localhost:3000/'; // window.location.origin;
+      window.parent.postMessage(
+        {
+          type: Enums.EventTypes.ROUTE_CHANGED,
+          path: window.location.pathname,
+        },
+        targetOrigin
+      );
+    };
+    window.addEventListener('popstate', popstateHandler);
+    return () => {
+      window.removeEventListener('message', handler);
+      window.removeEventListener('popstate', popstateHandler);
+    };
+  }, []);
+  return <></>;
 };
 
 function App({
@@ -78,25 +115,23 @@ function App({
     run();
   }, []);
 
-  // useEffect(() => {
-  //   const handler = event => {
-  //     if (event.origin !== window.location.origin) return;
-  //     console.log('xxxxx Received:', event.data);
-  //   };
-
-  //   window.addEventListener('message', handler);
-  //   window.addEventListener('popstate', () => {
-  //     console.log('Route changed:', window.location.pathname);
-  //     window.parent.postMessage(
-  //       {
-  //         type: 'ROUTE_CHANGED',
-  //         path: window.location.pathname,
-  //       },
-  //       window.location.origin
-  //     );
-  //   });
-  //   return () => window.removeEventListener('message', handler);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      if (servicesManager?.services?.uiModalService && !Cookies.get('cattrax_bearer_token')) {
+        servicesManager.services.uiModalService.show({
+          title: 'Welome to use DICOM application',
+          content: () => {
+            return (
+              <div className="text-foreground">
+                {/* <p>Welome to use DICOM application</p> */}
+                <div className="mt-2 font-bold">You're not logged in</div>
+              </div>
+            );
+          },
+        });
+      }
+    }, 1000);
+  }, []);
 
   if (!init) {
     return null;
@@ -121,6 +156,8 @@ function App({
     const max3DTextureSize = gl.getParameter(gl.MAX_3D_TEXTURE_SIZE);
     appConfigState.max3DTextureSize = max3DTextureSize;
   }
+
+  servicesManager.registerService(CattraxApiService.REGISTRATION);
 
   const {
     uiDialogService,
@@ -148,6 +185,7 @@ function App({
     [DialogProvider, { service: uiDialogService, dialog: ManagedDialog }],
     [ModalProvider, { service: uiModalService, modal: ModalNext }],
     [ShepherdJourneyProvider],
+    [AppStateProvider],
   ];
 
   // Loop through and register each of the service providers registered with the ServiceProvidersManager.
@@ -196,6 +234,7 @@ function App({
         {authRoutes}
         {appRoutes}
       </BrowserRouter>
+      <CattraxView />
     </CombinedProviders>
   );
 }

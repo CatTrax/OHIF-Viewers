@@ -9,6 +9,7 @@ import { UserAuthenticationProvider, useUserAuthentication } from './UserAuthent
 import { ImageViewerContext, ImageViewerProvider, useImageViewer } from './ImageViewerProvider';
 import DragAndDropProvider from './DragAndDropProvider';
 import CineProvider, { useCine } from './CineProvider';
+import AppStateProvider, { useAppState } from './AppStateProvider';
 
 export { useNotification, NotificationProvider };
 export { ViewportGridContext, ViewportGridProvider, useViewportGrid };
@@ -21,3 +22,4 @@ export { ImageViewerContext, ImageViewerProvider, useImageViewer };
 export { DragAndDropProvider };
 export { CineProvider, useCine };
 export { IconPresentationProvider, useIconPresentation } from './IconPresentationProvider';
+export { AppStateProvider, useAppState };

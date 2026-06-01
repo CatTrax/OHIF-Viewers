@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import classNames from 'classnames';
 import {
   DropdownMenu,
@@ -9,9 +9,10 @@ import {
   Button,
   ToolButton,
 } from '../';
-import { IconPresentationProvider } from '@ohif/ui-next';
+import { IconPresentationProvider, useAppState } from '@ohif/ui-next';
 
 import NavBar from '../NavBar';
+import { Enums } from '@ohif/core';
 
 // Todo: we should move this component to composition and remove props base
 
@@ -51,6 +52,21 @@ function Header({
     }
   };
 
+  // const [isFullscreen, setIsFullscreen] = useState(false);
+  const { isFullScreen, setIsFullScreen } = useAppState();
+
+  const toggleFullscreen = useCallback(() => {
+    //TODO: yang
+    const targetOrigin = 'http://localhost:3000/'; // window.location.origin;
+    window.parent.postMessage(
+      {
+        type: isFullScreen ? Enums.EventTypes.EXIT_FULLSCREEN : Enums.EventTypes.ENTER_FULLSCREEN,
+      },
+      targetOrigin
+    );
+    setIsFullScreen(!isFullScreen);
+  }, [isFullScreen]);
+
   return (
     <IconPresentationProvider
       size="large"
@@ -71,9 +87,9 @@ function Header({
               data-cy="return-to-work-list"
             >
               {isReturnEnabled && <Icons.ArrowLeft className="text-primary ml-1 h-7 w-7" />}
-              <div className="ml-1">
+              {/* <div className="ml-1">
                 {WhiteLabeling?.createLogoComponentFn?.(React, props) || <Icons.OHIFLogo />}
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="absolute top-1/2 left-[250px] h-8 -translate-y-1/2">{Secondary}</div>
@@ -85,6 +101,12 @@ function Header({
             <div className="border-muted mx-1.5 h-[25px] border-r"></div>
             {PatientInfo}
             <div className="border-muted mx-1.5 h-[25px] border-r"></div>
+            <Button
+              size="lg"
+              onClick={toggleFullscreen}
+            >
+              {isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            </Button>
             <div className="flex-shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
