@@ -7,6 +7,8 @@ import { extensionManager } from '../App';
 import { useParams, useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import useSearchParams from '../hooks/useSearchParams';
+import Cookies from 'js-cookie';
+import { useAppState } from '@ohif/ui-next';
 
 /**
  * Determines if two React Router location objects are the same.
@@ -35,6 +37,8 @@ function DataSourceWrapper(props: withAppTypes) {
   const location = useLocation();
   const lowerCaseSearchParams = useSearchParams({ lowerCaseKeys: true });
   const query = useSearchParams();
+
+  const { cattraxPatientData } = useAppState();
 
   // const hash = window.location.hash.substring(1); // "aa=dd"
 
@@ -116,6 +120,15 @@ function DataSourceWrapper(props: withAppTypes) {
   const [data, setData] = useState(DEFAULT_DATA);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { userAuthenticationService } = servicesManager.services;
+
+  userAuthenticationService.serviceImplementation._getAuthorizationHeader = () => {
+    return {
+      //yang Authorization: `Bearer ${Cookies.get('cattrax_bearer_token')}`,
+      'x-practice-id': cattraxPatientData?.practiceId,
+    };
+  };
+
   /**
    * The effect to initialize the data source whenever it changes. Similar to
    * whenever a different Mode is entered, the Mode's data source is initialized, so
@@ -126,7 +139,11 @@ function DataSourceWrapper(props: withAppTypes) {
    */
   useEffect(() => {
     const initializeDataSource = async () => {
-      await dataSource.initialize({ params, query });
+      await dataSource.initialize({
+        params,
+        query,
+        patientId: cattraxPatientData?.patientId,
+      });
       setIsDataSourceInitialized(true);
     };
 
@@ -149,14 +166,6 @@ function DataSourceWrapper(props: withAppTypes) {
     );
     return () => sub.unsubscribe();
   }, []);
-
-  // servicesManager.services.userAuthenticationService.setServiceImplementation({
-  //   getAuthorizationHeader: () => {
-  //     return {
-  //       Authorization: `Bearer sdfkjksdjfksdjfkjsdkfj`,
-  //     };
-  //   },
-  // });
 
   useEffect(() => {
     if (!isDataSourceInitialized) {

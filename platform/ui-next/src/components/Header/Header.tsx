@@ -57,7 +57,7 @@ function Header({
 
   const toggleFullscreen = useCallback(() => {
     //TODO: yang
-    const targetOrigin = window.location.origin; //localdev http://localhost:3000/
+    const targetOrigin = window.location.origin; //yang localdev http://localhost:3000/
     window.parent.postMessage(
       {
         type: isFullScreen ? Enums.EventTypes.EXIT_FULLSCREEN : Enums.EventTypes.ENTER_FULLSCREEN,

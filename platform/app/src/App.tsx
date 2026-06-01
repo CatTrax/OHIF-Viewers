@@ -67,7 +67,7 @@ const CattraxView = () => {
     const popstateHandler = () => {
       console.log('Route changed:', window.location.pathname);
       //TODO: yang
-      const targetOrigin = window.location.origin; //localdev 'http://localhost:3000/';
+      const targetOrigin = window.location.origin; //yang localdev 'http://localhost:3000/';
       window.parent.postMessage(
         {
           type: Enums.EventTypes.ROUTE_CHANGED,

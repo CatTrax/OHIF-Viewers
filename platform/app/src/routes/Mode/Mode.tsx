@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { utils } from '@ohif/core';
-import { ImageViewerProvider, DragAndDropProvider } from '@ohif/ui-next';
+import { ImageViewerProvider, DragAndDropProvider, useAppState } from '@ohif/ui-next';
 import { useSearchParams } from '../../hooks';
 import { useAppConfig } from '@state';
 import ViewportGrid from '@components/ViewportGrid';
@@ -26,6 +26,8 @@ export default function ModeRoute({
 
   // Parse route params/querystring
   const location = useLocation();
+
+  const { cattraxPatientData } = useAppState();
 
   // The react router DOM placeholder map (see https://reactrouter.com/en/main/hooks/use-params).
   const params = useParams();
@@ -123,6 +125,7 @@ export default function ModeRoute({
       await dataSource.initialize({
         params,
         query,
+        patientId: cattraxPatientData?.patientId,
       });
       setStudyInstanceUIDs(dataSource.getStudyInstanceUIDs({ params, query }));
     };
