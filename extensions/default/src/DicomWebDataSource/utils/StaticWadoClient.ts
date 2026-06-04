@@ -38,6 +38,7 @@ export default class StaticWadoClient extends api.DICOMwebClient {
     studydate: '00080020',
     modalitiesinstudy: '00080061',
     accessionnumber: '00080050',
+    cattraxpatient: '00100021',
   };
 
   static seriesFilterKeys = {

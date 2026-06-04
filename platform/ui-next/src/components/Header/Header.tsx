@@ -52,20 +52,21 @@ function Header({
     }
   };
 
-  // const [isFullscreen, setIsFullscreen] = useState(false);
-  const { isFullScreen, setIsFullScreen } = useAppState();
+  const { isFullScreenRef } = useAppState();
+
+  const [isFullscreen, setIsFullscreen] = useState(isFullScreenRef.current);
 
   const toggleFullscreen = useCallback(() => {
-    //TODO: yang
-    const targetOrigin = window.location.origin; //yang localdev http://localhost:3000/
+    const targetOrigin = window.location.origin; //localdev http://localhost:3000/
     window.parent.postMessage(
       {
-        type: isFullScreen ? Enums.EventTypes.EXIT_FULLSCREEN : Enums.EventTypes.ENTER_FULLSCREEN,
+        type: isFullscreen ? Enums.EventTypes.EXIT_FULLSCREEN : Enums.EventTypes.ENTER_FULLSCREEN,
       },
       targetOrigin
     );
-    setIsFullScreen(!isFullScreen);
-  }, [isFullScreen]);
+    isFullScreenRef.current = !isFullScreenRef.current;
+    setIsFullscreen(isFullScreenRef.current);
+  }, [isFullscreen]);
 
   return (
     <IconPresentationProvider
@@ -105,7 +106,7 @@ function Header({
               size="lg"
               onClick={toggleFullscreen}
             >
-              {isFullScreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+              {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
             </Button>
             <div className="flex-shrink-0">
               <DropdownMenu>

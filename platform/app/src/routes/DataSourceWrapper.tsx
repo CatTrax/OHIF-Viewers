@@ -124,7 +124,7 @@ function DataSourceWrapper(props: withAppTypes) {
 
   userAuthenticationService.serviceImplementation._getAuthorizationHeader = () => {
     return {
-      //yang Authorization: `Bearer ${Cookies.get('cattrax_bearer_token')}`,
+      Authorization: `Bearer ${Cookies.get('cattrax_bearer_token')}`,
       'x-practice-id': cattraxPatientData?.practiceId,
     };
   };
@@ -142,7 +142,6 @@ function DataSourceWrapper(props: withAppTypes) {
       await dataSource.initialize({
         params,
         query,
-        patientId: cattraxPatientData?.patientId,
       });
       setIsDataSourceInitialized(true);
     };
@@ -171,16 +170,12 @@ function DataSourceWrapper(props: withAppTypes) {
     if (!isDataSourceInitialized) {
       return;
     }
-    servicesManager.services.myApiService
-      .fetchPatient(492, 3)
-      .then(result => {
-        console.log('API call successful, result:', result);
-      })
-      .catch(error => {
-        console.error('API call failed:', error);
-      });
-    // const result = servicesManager.services.
-    const queryFilterValues = _getQueryFilterValues(location.search, STUDIES_LIMIT);
+
+    const queryFilterValues = _getQueryFilterValues(
+      location.search,
+      STUDIES_LIMIT,
+      cattraxPatientData
+    );
 
     // 204: no content
     async function getData() {
@@ -221,7 +216,7 @@ function DataSourceWrapper(props: withAppTypes) {
       const isDataInvalid =
         !isSamePage || (!isLoading && (newOffset !== previousOffset || isLocationUpdated));
 
-      if (isDataInvalid) {
+      if (isDataInvalid && cattraxPatientData?.patientId) {
         getData().catch(e => {
           console.error(e);
 
@@ -252,7 +247,16 @@ function DataSourceWrapper(props: withAppTypes) {
       console.warn(ex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, location, params, isLoading, setIsLoading, dataSource, isDataSourceInitialized]);
+  }, [
+    data,
+    location,
+    params,
+    isLoading,
+    setIsLoading,
+    dataSource,
+    isDataSourceInitialized,
+    cattraxPatientData,
+  ]);
   // queryFilterValues
 
   // TODO: Better way to pass DataSource?
@@ -282,7 +286,7 @@ export default DataSourceWrapper;
  * Need generic that can be shared? Isn't this what qs is for?
  * @param {*} query
  */
-function _getQueryFilterValues(query, queryLimit) {
+function _getQueryFilterValues(query, queryLimit, cattraxPatientData) {
   query = new URLSearchParams(query);
   const newParams = new URLSearchParams();
   for (const [key, value] of query) {
@@ -296,6 +300,7 @@ function _getQueryFilterValues(query, queryLimit) {
   const queryFilterValues = {
     // DCM
     patientId: query.get('mrn'),
+    cattraxpatient: cattraxPatientData?.patientId,
     patientName: query.get('patientname'),
     studyDescription: query.get('description'),
     modalitiesInStudy: query.get('modalities') && query.get('modalities').split(','),

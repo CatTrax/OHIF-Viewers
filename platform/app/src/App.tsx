@@ -57,7 +57,7 @@ const CattraxView = () => {
   const { setCattraxPatientData } = useAppState();
   useEffect(() => {
     const handler = event => {
-      console.log('xxxxx Received:', event.data);
+      // console.log('xxxxx Received:', event.data);
       if (event.data && event.data.type === Enums.EventTypes.SET_PATIENT_PRACTICE) {
         setCattraxPatientData(event.data.data);
       }
@@ -65,9 +65,9 @@ const CattraxView = () => {
 
     window.addEventListener('message', handler);
     const popstateHandler = () => {
-      console.log('Route changed:', window.location.pathname);
-      //TODO: yang
-      const targetOrigin = window.location.origin; //yang localdev 'http://localhost:3000/';
+      // console.log('Route changed:', window.location.pathname);
+
+      const targetOrigin = window.location.origin;
       window.parent.postMessage(
         {
           type: Enums.EventTypes.ROUTE_CHANGED,
@@ -77,6 +77,14 @@ const CattraxView = () => {
       );
     };
     window.addEventListener('popstate', popstateHandler);
+
+    window.parent.postMessage(
+      {
+        type: Enums.EventTypes.LOAD_COMPLETE,
+      },
+      window.location.origin
+    );
+
     return () => {
       window.removeEventListener('message', handler);
       window.removeEventListener('popstate', popstateHandler);

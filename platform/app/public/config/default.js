@@ -106,9 +106,9 @@ window.config = {
       configuration: {
         friendlyName: 'AWS S3 Static wado server',
         name: 'aws',
-        wadoUriRoot: 'https://d14fa38qiwhyfd.cloudfront.net/dicomweb',
-        qidoRoot: 'https://d14fa38qiwhyfd.cloudfront.net/dicomweb',
-        wadoRoot: 'https://d14fa38qiwhyfd.cloudfront.net/dicomweb',
+        wadoUriRoot: `${window.location.origin.indexOf('localhost') !== -1 ? 'https://dev.cattrax.co.nz/cattrax-rest-api/api/dicom' : `${window.location.origin}/cattrax-rest-api/api/dicom`}`,
+        qidoRoot: `${window.location.origin.indexOf('localhost') !== -1 ? 'https://dev.cattrax.co.nz/cattrax-rest-api/api/dicom' : `${window.location.origin}/cattrax-rest-api/api/dicom`}`,
+        wadoRoot: `${window.location.origin.indexOf('localhost') !== -1 ? 'https://dev.cattrax.co.nz/cattrax-rest-api/api/dicom' : `${window.location.origin}/cattrax-rest-api/api/dicom`}`,
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',

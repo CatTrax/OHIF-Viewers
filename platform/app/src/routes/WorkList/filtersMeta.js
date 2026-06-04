@@ -4,14 +4,14 @@ const filtersMeta = [
   {
     name: 'patientName',
     displayName: i18n.t('StudyList:PatientName'),
-    inputType: 'Text',
+    inputType: 'None',
     isSortable: true,
     gridCol: 4,
   },
   {
     name: 'mrn',
     displayName: i18n.t('StudyList:MRN'),
-    inputType: 'Text',
+    inputType: 'None',
     isSortable: true,
     gridCol: 3,
   },

@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext, useRef } from 'react';
 
 const appStateContext = createContext<AppState | null>(null);
 const { Provider } = appStateContext;
@@ -11,18 +11,17 @@ type CattraxPatient = {
 };
 
 type AppState = {
-  isFullScreen: boolean;
-  setIsFullScreen: (isFullScreen: boolean) => void;
+  isFullScreenRef: React.MutableRefObject<boolean>;
   setCattraxPatientData: (data: CattraxPatient) => void;
   cattraxPatientData: CattraxPatient | null;
 };
 
 export function AppStateProvider({ children }) {
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const isFullScreenRef = useRef<boolean>(false);
   const [cattraxPatientData, setCattraxPatientData] = useState<CattraxPatient | null>(null);
 
   return (
-    <Provider value={{ isFullScreen, setIsFullScreen, setCattraxPatientData, cattraxPatientData }}>
+    <Provider value={{ isFullScreenRef, setCattraxPatientData, cattraxPatientData }}>
       {children}
     </Provider>
   );
