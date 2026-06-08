@@ -152,6 +152,7 @@ function mapParams(params, options = {}) {
     '00081030', // Study Description
     '00080060', // Modality
     '00100021', // catraxpatient
+    '00080016', // SOP Class UID
     // Add more fields here if you want them in the result
   ].join(',');
 
@@ -175,7 +176,7 @@ function mapParams(params, options = {}) {
     offset: params.offset || 0,
     fuzzymatching: options.supportsFuzzyMatching === true,
     includefield: commaSeparatedFields, // serverSupportsQIDOIncludeField ? commaSeparatedFields : 'all',
-    cattraxpatient: withWildcard(params.cattraxpatient),
+    '00100021': withWildcard(params.cattraxpatient),
   };
 
   // build the StudyDate range parameter
