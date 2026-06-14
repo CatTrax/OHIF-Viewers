@@ -6,6 +6,7 @@ import i18n from '@ohif/i18n';
 import { I18nextProvider } from 'react-i18next';
 import { BrowserRouter, type BrowserRouterProps } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import * as ort from 'onnxruntime-web/webgpu';
 
 import Compose from './routes/Mode/Compose';
 import {
@@ -119,6 +120,7 @@ function App({
     const run = async () => {
       appInit(config, defaultExtensions, defaultModes).then(setInit).catch(console.error);
     };
+    console.log(ort);
 
     run();
   }, []);
